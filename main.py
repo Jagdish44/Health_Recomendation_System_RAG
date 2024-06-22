@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template,request, jsonify
 import sqlite3
 import openai
 
@@ -7,6 +7,9 @@ app = Flask(__name__)
 
 # Set your OpenAI API key
 openai.api_key = 'sk-proj-XPF0fIquEv9wskgJrIc7T3BlbkFJhI84ga8D92IXeIbFKnFu'
+
+def index():
+    return render_template('index.html')
 
 def get_diet_recommendations(condition):
     conn = sqlite3.connect('diet_recommendations.db')
