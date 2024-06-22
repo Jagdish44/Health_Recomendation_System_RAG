@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Recommendations</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" href="#">Diet Recommendations</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Diet Recommendation System</h1>
+        
+        <!-- Form to submit health condition -->
+        <form action="{{ url_for('process_form') }}" method="POST">
+            <label for="health_condition">Enter your health condition:</label>
+            <input type="text" id="health_condition" name="health_condition" required>
+            <button type="submit">Get Recommendations</button>
+        </form>
+
+        <!-- Display recommendations and GPT summary -->
+        <div id="recommendations">
+            <h2>Recommendations</h2>
+            <p>{{ recommendations }}</p>
+        </div>
+
+        <div id="summary">
+            <h2>Summary from GPT</h2>
+            <p>{{ gpt_summary }}</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>Created with ❤️ by Puchka | <a href="https://github.com/Jagdish44">Jagdish44</a></p>
+    </footer>
+</body>
+</html>

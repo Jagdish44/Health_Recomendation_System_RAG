@@ -1,8 +1,12 @@
+from flask import Flask, request, jsonify
 import sqlite3
 import openai
 
+# Initialize the Flask application
+app = Flask(__name__)
+
 # Set your OpenAI API key
-openai.api_key = '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'
+openai.api_key = 'sk-proj-XPF0fIquEv9wskgJrIc7T3BlbkFJhI84ga8D92IXeIbFKnFu'
 
 def get_diet_recommendations(condition):
     conn = sqlite3.connect('diet_recommendations.db')
@@ -39,13 +43,17 @@ def chat_with_gpt(prompt):
     )
     return response['choices'][0]['message']['content'].strip()
 
-def main():
-    user_input = input("Enter your health condition: ")
-    recommendations = get_diet_recommendations(user_input)
-    print(f"Diet recommendations for {user_input}:\n{recommendations}")
+@app.route('/recommendations', methods=['POST'])
+def recommendations():
+    data = request.get_json()
+    condition = data.get('condition')
+    if not condition:
+        return jsonify({'error': 'Condition is required'}), 400
 
-    gpt_response = chat_with_gpt(f"Provide a brief summary for diet recommendations for {user_input}. The recommendations are as follows:\n{recommendations}")
-    print(f"Summary from GPT:\n{gpt_response}")
+    recommendations = get_diet_recommendations(condition)
+    gpt_response = chat_with_gpt(f"Provide a brief summary for diet recommendations for {condition}. The recommendations are as follows:\n{recommendations}")
+    
+    return jsonify({'recommendations': recommendations, 'gpt_response': gpt_response})
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    app.run(debug=True)
