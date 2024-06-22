@@ -1,3 +1,5 @@
+<!-- templates/index.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,40 +7,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diet Recommendations</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a class="navbar-brand" href="#">Diet Recommendations</a>
-    </nav>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <!-- Add more navbar items as needed -->
+            </ul>
+        </nav>
+    </header>
 
-    <!-- Main Content -->
-    <div class="container">
-        <h1>Diet Recommendation System</h1>
-        
-        <!-- Form to submit health condition -->
-        <form action="{{ url_for('process_form') }}" method="POST">
-            <label for="health_condition">Enter your health condition:</label>
-            <input type="text" id="health_condition" name="health_condition" required>
-            <button type="submit">Get Recommendations</button>
-        </form>
+    <main>
+        <section class="container">
+            <h1>Diet Recommendations</h1>
+            <form method="post">
+                <label for="condition">Enter your health condition:</label>
+                <input type="text" id="condition" name="condition" required>
+                <button type="submit">Get Recommendations</button>
+            </form>
+            
+            {% if recommendations %}
+                <h2>Recommendations:</h2>
+                <p>{{ recommendations }}</p>
+            {% endif %}
 
-        <!-- Display recommendations and GPT summary -->
-        <div id="recommendations">
-            <h2>Recommendations</h2>
-            <p>{{ recommendations }}</p>
-        </div>
+            {% if gpt_response %}
+                <h2>Summary from GPT:</h2>
+                <p>{{ gpt_response }}</p>
+            {% endif %}
+        </section>
+    </main>
 
-        <div id="summary">
-            <h2>Summary from GPT</h2>
-            <p>{{ gpt_summary }}</p>
-        </div>
-    </div>
-
-    <!-- Footer -->
     <footer>
-        <p>Created with ❤️ by Puchka | <a href="https://github.com/Jagdish44">Jagdish44</a></p>
+        <p>&copy; 2024 Your Company Name. All rights reserved.</p>
     </footer>
 </body>
 </html>

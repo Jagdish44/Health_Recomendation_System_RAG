@@ -1,16 +1,16 @@
-from flask import Flask, render_template,request, jsonify
+# main.py
+
+from flask import Flask, render_template, request
 import sqlite3
 import openai
+import os
 
-# Initialize the Flask application
 app = Flask(__name__)
+secret_key =  os.urandom(24)
+app.config['SECRET_KEY'] = 'secret_key'
+openai.api_key = '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'
 
-# Set your OpenAI API key
-openai.api_key = 'sk-proj-XPF0fIquEv9wskgJrIc7T3BlbkFJhI84ga8D92IXeIbFKnFu'
-
-def index():
-    return render_template('index.html')
-
+# Function to fetch diet recommendations from SQLite database
 def get_diet_recommendations(condition):
     conn = sqlite3.connect('diet_recommendations.db')
     cursor = conn.cursor()
@@ -32,6 +32,17 @@ def get_diet_recommendations(condition):
     recommendations_str = "\n".join([f"{name}: {calories} kcal, {protein}g protein, {fat}g fat, {carbs}g carbs" for name, calories, protein, fat, carbs in recommendations])
     return recommendations_str
 
+# Route to render index.html and handle form submission
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        user_input = request.form['condition']
+        recommendations = get_diet_recommendations(user_input)
+        gpt_response = chat_with_gpt(f"Provide a brief summary for diet recommendations for {user_input}. The recommendations are as follows:\n{recommendations}")
+        return render_template('index.html', recommendations=recommendations, gpt_response=gpt_response)
+    return render_template('index.html')
+
+# Function to interact with OpenAI's GPT-3 API
 def chat_with_gpt(prompt):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -45,18 +56,6 @@ def chat_with_gpt(prompt):
         temperature=0.7,
     )
     return response['choices'][0]['message']['content'].strip()
-
-@app.route('/recommendations', methods=['POST'])
-def recommendations():
-    data = request.get_json()
-    condition = data.get('condition')
-    if not condition:
-        return jsonify({'error': 'Condition is required'}), 400
-
-    recommendations = get_diet_recommendations(condition)
-    gpt_response = chat_with_gpt(f"Provide a brief summary for diet recommendations for {condition}. The recommendations are as follows:\n{recommendations}")
-    
-    return jsonify({'recommendations': recommendations, 'gpt_response': gpt_response})
 
 if __name__ == '__main__':
     app.run(debug=True)
