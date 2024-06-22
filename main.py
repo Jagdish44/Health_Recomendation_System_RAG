@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 secret_key =  os.urandom(24)
 app.config['SECRET_KEY'] = 'secret_key'
-openai.api_key = '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'
+openai.api_key = 'sk-'
 
 # Function to fetch diet recommendations from SQLite database
 def get_diet_recommendations(condition):
